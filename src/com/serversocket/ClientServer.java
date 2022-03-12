@@ -2,7 +2,6 @@ package com.serversocket;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
@@ -35,7 +34,7 @@ public class ClientServer {
             } while (requestStatus == null || Objects.equals(requestStatus, ""));
             String[] parsed = requestStatus.split(" ");
             String requestedFile = (parsed[1].equals("/")) ? DEFAULT_FILE : parsed[1].substring(1);
-            System.out.format("[%s] %s - Accepted\n", new java.util.Date(), requestStatus);
+            System.out.format("[%s] %s - Accepted\n", new Date(), requestStatus);
 
             // Check whether file exists.
             boolean fileExist = fileExist(requestedFile);
@@ -65,7 +64,7 @@ public class ClientServer {
             bos.flush();
 
             // Close the connection
-            System.out.format("[%s] %s - Closing\n", new java.util.Date(), requestStatus);
+            System.out.format("[%s] %s - Closing\n", new Date(), requestStatus);
             client.close();
 
         } catch (IOException e) {

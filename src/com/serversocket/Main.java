@@ -1,7 +1,5 @@
 package com.serversocket;
 
-import com.serversocket.ClientServer;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 
