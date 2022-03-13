@@ -31,18 +31,18 @@ public class ClientServer {
                 requestStatus = bufferedReader.readLine();
             } while (requestStatus == null || Objects.equals(requestStatus, ""));
             String[] parsed = requestStatus.split(" ");
-            String requestedFile = (parsed[1].equals("/")) ? DEFAULT_FILE : parsed[1].substring(1);
+            String requestedFile = (parsed[1].equals("/")) ? "" : parsed[1].substring(1);
             System.out.format("[%s] %s - Accepted\n", new Date(), requestStatus);
 
             // Check whether file exists.
-            boolean fileExist = FileService.fileExist(requestedFile);
+            boolean fileExist = FileService.fileExist(ROOT + requestedFile);
 
             // Fetch file that handle 404 if the requested file is not found.
             String fetchedFile = (fileExist) ? requestedFile : FILE_NOT_FOUND;
             String responseStatus = (fileExist) ? "200 OK" : "404 File Not Found";
 
             // Initialize file service class.
-            FileService fileService = new FileService(fetchedFile);
+            FileService fileService = new FileService(ROOT, fetchedFile, DEFAULT_FILE);
 
             // Write response header
             bufferedWriter.write("HTTP/1.1 " + responseStatus + "\r\n");
