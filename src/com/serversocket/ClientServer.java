@@ -57,6 +57,7 @@ public class ClientServer {
             bufferedWriter.write("Content-Type: " + fileService.getContentType() + "\r\n");
             bufferedWriter.write("Content-Length: " + fileService.getFileLength() + "\r\n");
             bufferedWriter.write("Content-Disposition: " + fileService.getContentDisposition() + "\r\n");
+            bufferedWriter.write("Server: WW Server Pro\r\n");
             bufferedWriter.write("\r\n");
             bufferedWriter.flush();
 
