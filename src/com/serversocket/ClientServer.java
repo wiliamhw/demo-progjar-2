@@ -36,9 +36,10 @@ public class ClientServer {
             String hostFromRequest = requestHeader.getHeaderWithKey("Host");
             String connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
 
-            System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
-
+            // Change file root location
             ROOT = configService.getSettingsWithKey(hostFromRequest);
+
+            System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
             System.out.format("[%s] Accessed domain with %s to folder %s\n", new Date(), hostFromRequest, ROOT);
 
             // Check whether file exists.

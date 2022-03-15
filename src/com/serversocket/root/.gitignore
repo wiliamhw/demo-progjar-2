@@ -1,7 +1,7 @@
 *
 
 !.gitignore
-!404.html
+!../error/404.html
 !index.html
-!list
-!list/*
+!../list
+!../list/*

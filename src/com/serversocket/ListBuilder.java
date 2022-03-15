@@ -8,6 +8,7 @@ public class ListBuilder {
     private String urn;
     private StringBuilder Html;
 
+    static final String DEFAULT_LINK = "error.id";
     static final String[] SIZE_SYMBOL_ORDER = {"B", "KB", "MB", "GB"};
 
     public ListBuilder(ArrayList<HashMap<String, String>> files, String urn) {
@@ -44,7 +45,7 @@ public class ListBuilder {
     private String getTableRows() {
         StringBuilder tableRow = new StringBuilder(
             "           <tr>\n" +
-            "               <th valign=\"top\"><img src=\"/list/blank.gif\" alt=\"[ICO]\"></th>\n" +
+            "               <th valign=\"top\"><img src=\"http://" + DEFAULT_LINK + "/list/blank.gif\" alt=\"[ICO]\"></th>\n" +
             "               <th>Name</th>\n" +
             "               <th style=\"padding: 0 10px;\">Last modified</th>\n" +
             "               <th>Size</th>\n" +
@@ -58,7 +59,7 @@ public class ListBuilder {
             boolean isFile = file.get("type").equals("file");
             String alt = (isFile) ? "TXT" : "DIR";
             String icon = (isFile) ? "text.gif" : "folder.gif";
-            String iconPath = String.format("/list/%s", icon);
+            String iconPath = String.format("http://%s/list/%s", DEFAULT_LINK, icon);
 
             // Get displayed size.
             String size = "-";

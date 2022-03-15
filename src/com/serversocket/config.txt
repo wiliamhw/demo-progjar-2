@@ -1,4 +1,5 @@
 IP: 127.0.0.1
 PORT: 80
+error.id: ./src/com/serversocket/error/
 wisnupram.xyz: ./src/com/serversocket/root/
-will.com: .
+will.com: D:/
