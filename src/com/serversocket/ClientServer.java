@@ -47,7 +47,9 @@ public class ClientServer {
             } else {
                 documentRoot = configService.getSettingsWithKey(hostFromRequest);
                 documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
-                System.out.format("[%s] Accessed domain with %s to folder %s\n", new Date(), hostFromRequest, documentRoot);
+                System.out.format("[%s] Access domain %s in folder %s on port\n",
+                    new Date(), hostFromRequest, documentRoot, configService.getPort()
+                );
             }
 
             // Check whether file exists.
@@ -59,7 +61,9 @@ public class ClientServer {
             documentRoot = (fileExist) ? documentRoot : (SERVER_ROOT + SERVER_ASSETS_DIR + '\\');
 
             // Initialize file service class.
-            FileService fileService = new FileService(documentRoot, fetchedFile, DEFAULT_FILE);
+            FileService fileService = new FileService(
+                hostFromRequest, configService.getPort(), documentRoot, fetchedFile, DEFAULT_FILE
+            );
 
             // Write response header
             bufferedWriter.write("HTTP/1.1 " + responseStatus + "\r\n");

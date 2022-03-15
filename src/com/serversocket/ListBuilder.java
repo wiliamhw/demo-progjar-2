@@ -8,12 +8,20 @@ public class ListBuilder {
     private final String urn;
     private final String iconUrn;
 
+    private final String domain;
+    private final String root;
+    private final int port;
+
     private StringBuilder Html;
 
     private static final String[] SIZE_SYMBOL_ORDER = {"B", "KB", "MB", "GB"};
     public static final String ICON_DIR = "list-icons";
 
-    public ListBuilder(ArrayList<HashMap<String, String>> files, String urn) {
+    public ListBuilder(String domain, int port, String root, ArrayList<HashMap<String, String>> files, String urn) {
+        this.domain = domain;
+        this.port = port;
+        this.root = root;
+
         this.files = files;
         this.urn = "/" + urn;
         this.iconUrn = ClientServer.SERVER_ASSETS_DIR + '/' + ICON_DIR;
@@ -37,12 +45,13 @@ public class ListBuilder {
 
         Html.append(getTableRows());
 
-        Html.append(
+        Html.append(String.format(
             "       </tbody>\n" +
             "   </table>\n" +
+            "   <address>Server at %s in folder %s on port %d</address>\n" +
             "</body>\n" +
             "</html>\n"
-        );
+        , domain, root, port));
     }
 
     private String getTableRows() {

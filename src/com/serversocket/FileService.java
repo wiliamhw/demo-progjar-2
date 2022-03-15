@@ -17,7 +17,7 @@ public class FileService {
     private int fileLength;
     private byte[] fileData;
 
-    public FileService(String root, String path, String defaultPath) throws IOException {
+    public FileService(String domain, int port, String root, String path, String defaultPath) throws IOException {
         String fullPath = root + path;
 
         // If the given path is a file, then fetch the given file.
@@ -34,7 +34,7 @@ public class FileService {
 
         // List all contents in the given directory & generate the list in html.
         ArrayList<HashMap<String, String>> files = getAllDirectoryContents(root, path);
-        ListBuilder listBuilder = new ListBuilder(files, (path.equals(defaultPath)) ? "" : path);
+        ListBuilder listBuilder = new ListBuilder(domain, port, root, files, (path.equals(defaultPath)) ? "" : path);
 
         this.contentType = "text/html";
         this.contentDisposition = "inline";
