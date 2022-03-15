@@ -14,7 +14,6 @@ public class ClientServer {
 
     private final Socket client;
     private final ConfigService configService;
-    private String documentRoot;
 
     public ClientServer(Socket client, ConfigService configService) {
         this.client = client;
@@ -47,6 +46,7 @@ public class ClientServer {
                 System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
 
                 // Determine document root.
+                String documentRoot;
                 if (getFirstDirFromPath(requestedFile).equals(SERVER_ASSETS_DIR)) {
                     documentRoot = SERVER_ROOT;
                 } else {
