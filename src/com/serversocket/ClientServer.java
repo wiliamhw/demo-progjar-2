@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.Date;
 
 public class ClientServer {
-    static final String ROOT = "./src/com/serversocket/root/";
+    static String ROOT = "./src/com/serversocket/root/";
     static final String DEFAULT_FILE = "index.html";
     static final String FILE_NOT_FOUND = "404.html";
 
@@ -30,14 +30,16 @@ public class ClientServer {
             Header requestHeader = new Header(bufferedReader);
             requestHeader.setRequestStatus();
             String requestedFile = requestHeader.getRequestedFile();
-            System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
 
             // Get all request header
             requestHeader.setAllRequestHeaders();
             String hostFromRequest = requestHeader.getHeaderWithKey("Host");
             String connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
 
+            System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
 
+            ROOT = configService.getSettingsWithKey(hostFromRequest);
+            System.out.format("[%s] Accessed domain with %s to folder %s\n", new Date(), hostFromRequest, ROOT);
 
             // Check whether file exists.
             boolean fileExist = FileService.fileExist(ROOT + requestedFile);
