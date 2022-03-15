@@ -10,7 +10,7 @@ public class ClientServer {
     public static final String SERVER_ASSETS_DIR = "server-assets";
 
     private static final String DEFAULT_FILE = "index.html";
-    private static final String FILE_NOT_FOUND = "404.html";
+    private static final String FILE_NOT_FOUND = "500.html";
 
     private final Socket client;
     private final ConfigService configService;
@@ -62,7 +62,7 @@ public class ClientServer {
 
             // Fetch file that handle 404 if the requested file is not found.
             String fetchedFile = (fileExist) ? requestedFile : FILE_NOT_FOUND;
-            String responseStatus = (fileExist) ? "200 OK" : "404 File Not Found";
+            String responseStatus = (fileExist) ? "200 OK" : "500 INTERNAL SERVER ERROR";
             documentRoot = (fileExist) ? documentRoot : (SERVER_ROOT + SERVER_ASSETS_DIR + '\\');
 
             // Initialize file service class.
