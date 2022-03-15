@@ -26,7 +26,9 @@ public class Header {
 
     public String getRequestedFile() {
         String[] parsedRequestStatus = requestStatus.split(" ");
-        return (parsedRequestStatus[1].equals("/")) ? "" : parsedRequestStatus[1].substring(1);
+        return (parsedRequestStatus[1].equals("/"))
+                ? ""
+                : parsedRequestStatus[1].substring(1).replaceAll("%20", " ");
     }
 
     public void setAllRequestHeaders() throws IOException {

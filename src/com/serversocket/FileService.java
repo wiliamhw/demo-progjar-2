@@ -57,7 +57,7 @@ public class FileService {
         // Get each file/folder meta data
         for (File file : listOfFiles) {
             HashMap<String, String> data = new HashMap<>();
-            long sizeInByte = (file.isFile()) ? file.length() : getDirectorySize(file);
+            long sizeInByte = (file.isFile()) ? file.length() : 0;
 
             data.put("name", file.getName());
             data.put("path", rootPath + file.getName());
