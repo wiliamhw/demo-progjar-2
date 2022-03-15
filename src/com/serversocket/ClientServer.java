@@ -53,11 +53,11 @@ public class ClientServer {
                         throw new ConfigurationException("Undefined domain.");
                     }
 
-                documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
-                System.out.format("Access domain %s in folder %s on port\n",
-                    hostFromRequest, documentRoot, configService.getPort()
-                );
-            }
+                    documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
+                    System.out.format("[%s] Access domain %s in folder %s on port %s\n",
+                        new Date(), hostFromRequest, documentRoot, configService.getPort()
+                    );
+                }
 
                 // Check whether file exists.
                 boolean fileExist = FileService.fileExist(documentRoot + requestedFile);
