@@ -21,10 +21,8 @@ public class Main {
                 client.serve();
             }
 
-        } catch (IOException e) {
-            System.err.println("Server Connection error : " + e.getMessage());
         } catch (Exception e) {
-            System.err.println("Configuration error : " + e.getMessage());
+            System.err.println("Configuration error: " + e.getMessage());
         }
     }
 }

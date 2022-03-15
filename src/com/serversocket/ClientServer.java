@@ -24,7 +24,7 @@ public class ClientServer {
     /**
      * Server user request.
      */
-    public void serve() throws ConfigurationException {
+    public void serve() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -89,8 +89,8 @@ public class ClientServer {
             // Close the connection
             System.out.format("[%s] Client access is closing\n", new Date());
             client.close();
-        } catch (IOException e) {
-            System.err.println("Server error : " + e);
+        }  catch (Exception e) {
+            System.err.println("Server error: " + e.getMessage());
         }
     }
 
