@@ -62,7 +62,7 @@ public class ClientServer {
 
             // Fetch file that handle 404 if the requested file is not found.
             String fetchedFile = (fileExist) ? requestedFile : FILE_NOT_FOUND;
-            String responseStatus = (fileExist) ? "200 OK" : "500 INTERNAL SERVER ERROR";
+            String responseStatus = (fileExist) ? "200 OK" : "500 Internal Server Error";
             documentRoot = (fileExist) ? documentRoot : (SERVER_ROOT + SERVER_ASSETS_DIR + '\\');
 
             // Initialize file service class.
