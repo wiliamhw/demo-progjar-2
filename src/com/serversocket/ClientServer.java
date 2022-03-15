@@ -26,13 +26,15 @@ public class ClientServer {
      */
     public void serve() {
         try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-            BufferedOutputStream bos = new BufferedOutputStream(client.getOutputStream());
             String connectionFromRequest;
 
             // Loop if user does not ask to close
             do {
+                // create buffer
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
+                BufferedOutputStream bos = new BufferedOutputStream(client.getOutputStream());
+
                 // Get requested file path
                 Header requestHeader = new Header(bufferedReader);
                 requestHeader.setRequestStatus();
