@@ -11,9 +11,11 @@ public class ClientServer {
     static final String FILE_NOT_FOUND = "404.html";
 
     private final Socket client;
+    private final ConfigService configService;
 
-    public ClientServer(Socket client) {
+    public ClientServer(Socket client, ConfigService configService) {
         this.client = client;
+        this.configService = configService;
     }
 
     /**
