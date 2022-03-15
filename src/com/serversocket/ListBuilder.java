@@ -67,6 +67,20 @@ public class ListBuilder {
             "           </tr>\n"
         , iconUrn));
 
+        // Append option to redirect parent directory.
+        if (!urn.equals("/")) {
+            String parentUrn = urn.substring(0, urn.lastIndexOf("/"));
+            parentUrn = (parentUrn.equals("")) ? "/" : parentUrn;
+            tableRow.append(String.format(
+                "           <tr>\n" +
+                "               <td valign=\"top\"><img src=\"/%s/back.gif\" alt=\"[PARENTDIR]\"></td>\n" +
+                "               <td><a href=\"%s\">Parent Directory</a></td>\n" +
+                "               <td style=\"padding: 0 10px;\"></td>\n" +
+                "               <td align=\"right\">-</td>\n" +
+                "           </tr>\n"
+            , iconUrn, parentUrn));
+        }
+
         for (HashMap<String, String> file : this.files) {
             boolean isFile = file.get("type").equals("file");
             String alt = (isFile) ? "TXT" : "DIR";
@@ -83,7 +97,7 @@ public class ListBuilder {
                 "           <tr>\n" +
                 "               <td valign=\"top\"><img src=\"%s\" alt=\"[%s]\"></td>\n" +
                 "               <td><a href=\"%s\">%s</a></td>\n" +
-                "               <td style=\"padding: 0 10px;\">%s\t</td>\n" +
+                "               <td style=\"padding: 0 10px;\">%s</td>\n" +
                 "               <td align=\"right\">%s</td>\n" +
                 "           </tr>\n"
             , iconPath, alt, file.get("path"), file.get("name"), file.get("lastModified"), size));

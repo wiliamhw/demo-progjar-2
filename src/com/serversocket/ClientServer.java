@@ -47,8 +47,8 @@ public class ClientServer {
             } else {
                 documentRoot = configService.getSettingsWithKey(hostFromRequest);
                 documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
-                System.out.format("[%s] Access domain %s in folder %s on port\n",
-                    new Date(), hostFromRequest, documentRoot, configService.getPort()
+                System.out.format("Access domain %s in folder %s on port\n",
+                    hostFromRequest, documentRoot, configService.getPort()
                 );
             }
 
