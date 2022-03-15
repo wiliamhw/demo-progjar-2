@@ -9,7 +9,6 @@ public class Main {
     /**
      * Run server socket
      *
-     * @param args
      */
     public static void main(String[] args) {
         try {
@@ -21,8 +20,6 @@ public class Main {
                 client.serve();
             }
 
-//            System.out.println("Close the server socket");
-//            serverSocket.close();
 
         } catch (IOException e) {
             System.err.println("Server Connection error : " + e.getMessage());
