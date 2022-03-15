@@ -52,6 +52,4 @@ public class Header {
     public boolean doesHeaderHaveKey(String key) {
         return requestHeader.containsKey(key);
     }
-
-
 }

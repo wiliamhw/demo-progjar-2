@@ -46,6 +46,7 @@ public class ClientServer {
                 documentRoot = SERVER_ROOT;
             } else {
                 documentRoot = configService.getSettingsWithKey(hostFromRequest);
+                documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
                 System.out.format("[%s] Accessed domain with %s to folder %s\n", new Date(), hostFromRequest, documentRoot);
             }
 
