@@ -1,5 +1,6 @@
 package com.serversocket;
 
+import javax.naming.ConfigurationException;
 import java.io.*;
 import java.net.Socket;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class ClientServer {
     /**
      * Server user request.
      */
-    public void serve() {
+    public void serve() throws ConfigurationException {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -46,6 +47,10 @@ public class ClientServer {
                 documentRoot = SERVER_ROOT;
             } else {
                 documentRoot = configService.getSettingsWithKey(hostFromRequest);
+                if (documentRoot == null) {
+                    throw new ConfigurationException("Undefined domain.");
+                }
+
                 documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
                 System.out.format("Access domain %s in folder %s on port\n",
                     hostFromRequest, documentRoot, configService.getPort()
