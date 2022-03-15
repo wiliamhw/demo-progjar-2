@@ -10,7 +10,7 @@ public class ClientServer {
     static final String DEFAULT_FILE = "index.html";
     static final String FILE_NOT_FOUND = "404.html";
 
-    private Socket client;
+    private final Socket client;
 
     public ClientServer(Socket client) {
         this.client = client;
@@ -26,13 +26,17 @@ public class ClientServer {
             BufferedOutputStream bos = new BufferedOutputStream(client.getOutputStream());
 
             // Get requested file path
-            String requestStatus = "";
-            do {
-                requestStatus = bufferedReader.readLine();
-            } while (requestStatus == null || Objects.equals(requestStatus, ""));
-            String[] parsed = requestStatus.split(" ");
-            String requestedFile = (parsed[1].equals("/")) ? "" : parsed[1].substring(1);
-            System.out.format("[%s] %s - Accepted\n", new Date(), requestStatus);
+            Header requestHeader = new Header(bufferedReader);
+            requestHeader.setRequestStatus();
+            String requestedFile = requestHeader.getRequestedFile();
+            System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
+
+            // Get all request header
+            requestHeader.getAllRequestHeaders();
+            String hostFromRequest = requestHeader.getHeaderWithKey("Host");
+            String connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
+
+
 
             // Check whether file exists.
             boolean fileExist = FileService.fileExist(ROOT + requestedFile);
@@ -57,7 +61,7 @@ public class ClientServer {
             bos.flush();
 
             // Close the connection
-            System.out.format("[%s] %s - Closing\n", new Date(), requestStatus);
+            System.out.format("[%s] %s - Closing\n", new Date(), requestHeader.getRequestStatus());
             client.close();
 
         } catch (IOException e) {
