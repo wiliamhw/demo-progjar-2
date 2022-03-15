@@ -4,15 +4,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ListBuilder {
-    private ArrayList<HashMap<String, String>> files;
-    private String urn;
+    private final ArrayList<HashMap<String, String>> files;
+    private final String urn;
+    private final String iconUrn;
+
     private StringBuilder Html;
 
-    static final String[] SIZE_SYMBOL_ORDER = {"B", "KB", "MB", "GB"};
+    private static final String[] SIZE_SYMBOL_ORDER = {"B", "KB", "MB", "GB"};
+    public static final String ICON_DIR = "list-icons";
 
     public ListBuilder(ArrayList<HashMap<String, String>> files, String urn) {
         this.files = files;
         this.urn = "/" + urn;
+        this.iconUrn = ClientServer.SERVER_ASSETS_DIR + '/' + ICON_DIR;
 
         this.generateHtml();
     }
@@ -42,9 +46,9 @@ public class ListBuilder {
     }
 
     private String getTableRows() {
-        StringBuilder tableRow = new StringBuilder(
+        StringBuilder tableRow = new StringBuilder(String.format(
             "           <tr>\n" +
-            "               <th valign=\"top\"><img src=\"/list/blank.gif\" alt=\"[ICO]\"></th>\n" +
+            "               <th valign=\"top\"><img src=\"/%s/blank.gif\" alt=\"[ICO]\"></th>\n" +
             "               <th>Name</th>\n" +
             "               <th style=\"padding: 0 10px;\">Last modified</th>\n" +
             "               <th>Size</th>\n" +
@@ -52,13 +56,13 @@ public class ListBuilder {
             "           <tr>\n" +
             "               <th colspan=\"5\"><hr></th>\n" +
             "           </tr>\n"
-        );
+        , iconUrn));
 
         for (HashMap<String, String> file : this.files) {
             boolean isFile = file.get("type").equals("file");
             String alt = (isFile) ? "TXT" : "DIR";
-            String icon = (isFile) ? "text.gif" : "folder.gif";
-            String iconPath = String.format("/list/%s", icon);
+            String iconName = (isFile) ? "text.gif" : "folder.gif";
+            String iconPath = String.format("/%s/%s", iconUrn, iconName);
 
             // Get displayed size.
             String size = "-";

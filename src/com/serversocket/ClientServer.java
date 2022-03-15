@@ -5,12 +5,15 @@ import java.net.Socket;
 import java.util.Date;
 
 public class ClientServer {
-    static String ROOT = "./src/com/serversocket/root/";
-    static final String DEFAULT_FILE = "index.html";
-    static final String FILE_NOT_FOUND = "404.html";
+    public static final String SERVER_ROOT = "./src/com/serversocket/";
+    public static final String SERVER_ASSETS_DIR = "server-assets";
+
+    private static final String DEFAULT_FILE = "index.html";
+    private static final String FILE_NOT_FOUND = "404.html";
 
     private final Socket client;
     private final ConfigService configService;
+    private String documentRoot;
 
     public ClientServer(Socket client, ConfigService configService) {
         this.client = client;
@@ -18,7 +21,7 @@ public class ClientServer {
     }
 
     /**
-     * Server user request
+     * Server user request.
      */
     public void serve() {
         try {
@@ -38,18 +41,24 @@ public class ClientServer {
 
             System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
 
-            ROOT = configService.getSettingsWithKey(hostFromRequest);
-            System.out.format("[%s] Accessed domain with %s to folder %s\n", new Date(), hostFromRequest, ROOT);
+            // Determine document root.
+            if (getFirstDirFromPath(requestedFile).equals(SERVER_ASSETS_DIR)) {
+                documentRoot = SERVER_ROOT;
+            } else {
+                documentRoot = configService.getSettingsWithKey(hostFromRequest);
+                System.out.format("[%s] Accessed domain with %s to folder %s\n", new Date(), hostFromRequest, documentRoot);
+            }
 
             // Check whether file exists.
-            boolean fileExist = FileService.fileExist(ROOT + requestedFile);
+            boolean fileExist = FileService.fileExist(documentRoot + requestedFile);
 
             // Fetch file that handle 404 if the requested file is not found.
             String fetchedFile = (fileExist) ? requestedFile : FILE_NOT_FOUND;
             String responseStatus = (fileExist) ? "200 OK" : "404 File Not Found";
+            documentRoot = (fileExist) ? documentRoot : (SERVER_ROOT + SERVER_ASSETS_DIR + '\\');
 
             // Initialize file service class.
-            FileService fileService = new FileService(ROOT, fetchedFile, DEFAULT_FILE);
+            FileService fileService = new FileService(documentRoot, fetchedFile, DEFAULT_FILE);
 
             // Write response header
             bufferedWriter.write("HTTP/1.1 " + responseStatus + "\r\n");
@@ -70,5 +79,12 @@ public class ClientServer {
         } catch (IOException e) {
             System.err.println("Server error : " + e);
         }
+    }
+
+    private String getFirstDirFromPath(String path) {
+        if (path.equals("")) {
+            return "";
+        }
+        return path.split("/")[0];
     }
 }

@@ -6,19 +6,23 @@ import java.util.Hashtable;
 public class ConfigService {
     private String IP;
     private int port;
-    private static final String CONFIG_FILE = "./src/com/serversocket/config.txt";
+
+    private static final String CONFIG_FILE = "config.txt";
+    private final String configPath;
+
     public static String IP_KEY = "IP";
     public static String PORT_KEY = "PORT";
 
     private final Hashtable<String, String> configSettings;
 
     public ConfigService() throws Exception {
+        this.configPath = ClientServer.SERVER_ROOT + CONFIG_FILE;
         this.configSettings = new Hashtable<>();
         setAllConfigs();
     }
 
     private void setAllConfigs() throws Exception {
-        File file = new File(CONFIG_FILE);
+        File file = new File(configPath);
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 
         String request;
@@ -27,11 +31,11 @@ public class ConfigService {
         } while (appendToHash(request));
 
         if (!doesSettingsHaveKey(IP_KEY)) {
-            throw new Exception("Config at " + CONFIG_FILE + " doesn't have " + IP_KEY + " key");
+            throw new Exception("Config at " + configPath + " doesn't have " + IP_KEY + " key");
         }
 
         if (!doesSettingsHaveKey(PORT_KEY)) {
-            throw new Exception("Config at " + CONFIG_FILE + " doesn't have " + PORT_KEY + " key");
+            throw new Exception("Config at " + configPath + " doesn't have " + PORT_KEY + " key");
         }
 
         IP = getSettingsWithKey(IP_KEY);
