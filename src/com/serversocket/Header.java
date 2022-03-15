@@ -29,7 +29,7 @@ public class Header {
         return (parsedRequestStatus[1].equals("/")) ? "" : parsedRequestStatus[1].substring(1);
     }
 
-    public void getAllRequestHeaders() throws IOException {
+    public void setAllRequestHeaders() throws IOException {
         String request;
         do {
             request = bufferedReader.readLine();

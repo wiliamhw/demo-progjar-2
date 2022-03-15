@@ -3,7 +3,6 @@ package com.serversocket;
 import java.io.*;
 import java.net.Socket;
 import java.util.Date;
-import java.util.Objects;
 
 public class ClientServer {
     static final String ROOT = "./src/com/serversocket/root/";
@@ -34,7 +33,7 @@ public class ClientServer {
             System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
 
             // Get all request header
-            requestHeader.getAllRequestHeaders();
+            requestHeader.setAllRequestHeaders();
             String hostFromRequest = requestHeader.getHeaderWithKey("Host");
             String connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
 
