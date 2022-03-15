@@ -29,27 +29,29 @@ public class ClientServer {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
             BufferedOutputStream bos = new BufferedOutputStream(client.getOutputStream());
+            String connectionFromRequest;
 
-            // Get requested file path
-            Header requestHeader = new Header(bufferedReader);
-            requestHeader.setRequestStatus();
-            String requestedFile = requestHeader.getRequestedFile();
+            // Loop if user does not ask to close
+            do {
+                // Get requested file path
+                Header requestHeader = new Header(bufferedReader);
+                requestHeader.setRequestStatus();
+                String requestedFile = requestHeader.getRequestedFile();
 
-            // Get all request header
-            requestHeader.setAllRequestHeaders();
-            String hostFromRequest = requestHeader.getHeaderWithKey("Host");
-            String connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
+                // Get all request header
+                requestHeader.setAllRequestHeaders();
+                String hostFromRequest = requestHeader.getHeaderWithKey("Host");
+                connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
+                System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
 
-            System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
-
-            // Determine document root.
-            if (getFirstDirFromPath(requestedFile).equals(SERVER_ASSETS_DIR)) {
-                documentRoot = SERVER_ROOT;
-            } else {
-                documentRoot = configService.getSettingsWithKey(hostFromRequest);
-                if (documentRoot == null) {
-                    throw new ConfigurationException("Undefined domain.");
-                }
+                // Determine document root.
+                if (getFirstDirFromPath(requestedFile).equals(SERVER_ASSETS_DIR)) {
+                    documentRoot = SERVER_ROOT;
+                } else {
+                    documentRoot = configService.getSettingsWithKey(hostFromRequest);
+                    if (documentRoot == null) {
+                        throw new ConfigurationException("Undefined domain.");
+                    }
 
                 documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
                 System.out.format("Access domain %s in folder %s on port\n",
@@ -57,36 +59,36 @@ public class ClientServer {
                 );
             }
 
-            // Check whether file exists.
-            boolean fileExist = FileService.fileExist(documentRoot + requestedFile);
+                // Check whether file exists.
+                boolean fileExist = FileService.fileExist(documentRoot + requestedFile);
 
-            // Fetch file that handle 404 if the requested file is not found.
-            String fetchedFile = (fileExist) ? requestedFile : FILE_NOT_FOUND;
-            String responseStatus = (fileExist) ? "200 OK" : "500 Internal Server Error";
-            documentRoot = (fileExist) ? documentRoot : (SERVER_ROOT + SERVER_ASSETS_DIR + '\\');
+                // Fetch file that handle 404 if the requested file is not found.
+                String fetchedFile = (fileExist) ? requestedFile : FILE_NOT_FOUND;
+                String responseStatus = (fileExist) ? "200 OK" : "500 Internal Server Error";
+                documentRoot = (fileExist) ? documentRoot : (SERVER_ROOT + SERVER_ASSETS_DIR + '\\');
 
-            // Initialize file service class.
-            FileService fileService = new FileService(
-                hostFromRequest, configService.getPort(), documentRoot, fetchedFile, DEFAULT_FILE
-            );
+                // Initialize file service class.
+                FileService fileService = new FileService(
+                    hostFromRequest, configService.getPort(), documentRoot, fetchedFile, DEFAULT_FILE
+                );
 
-            // Write response header
-            bufferedWriter.write("HTTP/1.1 " + responseStatus + "\r\n");
-            bufferedWriter.write("Content-Type: " + fileService.getContentType() + "\r\n");
-            bufferedWriter.write("Content-Length: " + fileService.getFileLength() + "\r\n");
-            bufferedWriter.write("Content-Disposition: " + fileService.getContentDisposition() + "\r\n");
-            bufferedWriter.write("Server: WW Server Pro\r\n");
-            bufferedWriter.write("\r\n");
-            bufferedWriter.flush();
+                // Write response header
+                bufferedWriter.write("HTTP/1.1 " + responseStatus + "\r\n");
+                bufferedWriter.write("Content-Type: " + fileService.getContentType() + "\r\n");
+                bufferedWriter.write("Content-Length: " + fileService.getFileLength() + "\r\n");
+                bufferedWriter.write("Content-Disposition: " + fileService.getContentDisposition() + "\r\n");
+                bufferedWriter.write("Server: WW Server Pro\r\n");
+                bufferedWriter.write("\r\n");
+                bufferedWriter.flush();
 
-            // Write response body
-            bos.write(fileService.getFileData(), 0, fileService.getFileLength());
-            bos.flush();
+                // Write response body
+                bos.write(fileService.getFileData(), 0, fileService.getFileLength());
+                bos.flush();
+            } while (!connectionFromRequest.equals("close"));
 
             // Close the connection
-            System.out.format("[%s] %s - Closing\n", new Date(), requestHeader.getRequestStatus());
+            System.out.format("[%s] Client access is closing\n", new Date());
             client.close();
-
         } catch (IOException e) {
             System.err.println("Server error : " + e);
         }
