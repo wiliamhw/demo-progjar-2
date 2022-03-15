@@ -14,7 +14,7 @@ public class Main {
             ConfigService configService = new ConfigService();
             InetAddress address = InetAddress.getByName(configService.getIP());
             ServerSocket serverSocket = new ServerSocket(configService.getPort(), 50, address);
-            System.out.println("Server started: http:://" + configService.getIP() + ":" + configService.getPort());
+            System.out.println("Server started: http://" + configService.getIP() + ":" + configService.getPort());
 
             while (true) {
                 ClientServer client = new ClientServer(serverSocket.accept(), configService);
