@@ -94,7 +94,7 @@ public class ClientServer {
                 bos.flush();
             } while (!connectionFromRequest.equals("close"));
 
-        }  catch (SocketTimeoutException e) {}
+        }
         catch (Exception e) {
             System.err.println("Server error: " + e.getMessage());
         } finally {
@@ -102,7 +102,7 @@ public class ClientServer {
             try {
                 client.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                System.err.println("Server error: " + e.getMessage());
             }
             System.out.format("[%s] Closing client access\n", new Date());
         }
