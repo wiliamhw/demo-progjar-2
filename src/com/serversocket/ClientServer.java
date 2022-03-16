@@ -92,6 +92,8 @@ public class ClientServer {
                 if (connectionFromRequest.equals("keep-alive")) {
                     bufferedWriter.write("Connection: " + "keep-alive" + "\r\n");
                     bufferedWriter.write("Keep-Alive: " + "timeout=5, max=1000" + "\r\n");
+                } else if (connectionFromRequest.equals("close")) {
+                    bufferedWriter.write("Connection: " + "close" + "\r\n");
                 }
                 bufferedWriter.write("Server: WW Server Pro\r\n");
                 bufferedWriter.write("\r\n");
