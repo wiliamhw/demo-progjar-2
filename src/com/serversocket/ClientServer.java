@@ -56,18 +56,10 @@ public class ClientServer {
                 }
 
                 // Determine document root.
-                String documentRoot;
-                if (getFirstDirFromPath(requestedFile).equals(SERVER_ASSETS_DIR)) {
-                    documentRoot = SERVER_ROOT;
-                } else {
-                    documentRoot = configService.getSettingsWithKey(hostFromRequest);
-                    if (documentRoot == null) {
-                        throw new ConfigurationException("Undefined domain.");
-                    }
-
-                    documentRoot = (documentRoot.equals(".")) ? "./" : documentRoot;
+                String documentRoot = getDocumentRoot(hostFromRequest, requestedFile);
+                if (documentRoot != SERVER_ROOT) {
                     System.out.format("[%s] Access domain %s in folder %s on port %s\n",
-                        new Date(), hostFromRequest, documentRoot, configService.getPort()
+                            new Date(), hostFromRequest, documentRoot, configService.getPort()
                     );
                 }
 
@@ -114,6 +106,14 @@ public class ClientServer {
             }
             System.out.format("[%s] Closing client access\n", new Date());
         }
+    }
+
+    private String getDocumentRoot(String domain, String requestedFile) throws ConfigurationException {
+        if (getFirstDirFromPath(requestedFile).equals(SERVER_ASSETS_DIR)) {
+            return SERVER_ROOT;
+        }
+        String documentRoot = configService.getSettingsWithKey(domain);
+        return (documentRoot != null && documentRoot.equals(".")) ? "./" : documentRoot;
     }
 
     private String getFirstDirFromPath(String path) {
