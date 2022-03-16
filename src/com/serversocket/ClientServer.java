@@ -86,8 +86,6 @@ public class ClientServer {
                 // Write response body
                 bos.write(fileService.getFileData(), 0, fileService.getFileLength());
                 bos.flush();
-
-                bufferedReader.
             } while (!connectionFromRequest.equals("close"));
 
             // Close the connection
