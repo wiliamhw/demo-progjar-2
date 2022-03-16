@@ -3,6 +3,7 @@ package com.serversocket;
 import javax.naming.ConfigurationException;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 
 public class ClientServer {
@@ -25,6 +26,8 @@ public class ClientServer {
      */
     public void serve() {
         try {
+            System.out.format("[%s] Accepting client access\n", new Date());
+
             // create buffer
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
             BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
@@ -44,6 +47,13 @@ public class ClientServer {
                 String hostFromRequest = requestHeader.getHeaderWithKey("Host");
                 connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
                 System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
+
+                // Adjust client socket if client request has keep alive connection header.
+                if (connectionFromRequest.equals("keep-alive")) {
+                    client.setKeepAlive(true);
+                    client.setTcpNoDelay(true);
+                    client.setSoTimeout(100);
+                }
 
                 // Determine document root.
                 String documentRoot;
@@ -79,6 +89,10 @@ public class ClientServer {
                 bufferedWriter.write("Content-Type: " + fileService.getContentType() + "\r\n");
                 bufferedWriter.write("Content-Length: " + fileService.getFileLength() + "\r\n");
                 bufferedWriter.write("Content-Disposition: " + fileService.getContentDisposition() + "\r\n");
+                if (connectionFromRequest.equals("keep-alive")) {
+                    bufferedWriter.write("Connection: " + "keep-alive" + "\r\n");
+                    bufferedWriter.write("Keep-Alive: " + "timeout=5, max=1000" + "\r\n");
+                }
                 bufferedWriter.write("Server: WW Server Pro\r\n");
                 bufferedWriter.write("\r\n");
                 bufferedWriter.flush();
@@ -88,11 +102,17 @@ public class ClientServer {
                 bos.flush();
             } while (!connectionFromRequest.equals("close"));
 
-            // Close the connection
-            System.out.format("[%s] Client access is closing\n", new Date());
-            client.close();
-        }  catch (Exception e) {
+        }  catch (SocketTimeoutException e) {}
+        catch (Exception e) {
             System.err.println("Server error: " + e.getMessage());
+        } finally {
+            // Close the connection
+            try {
+                client.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.format("[%s] Closing client access\n", new Date());
         }
     }
 
