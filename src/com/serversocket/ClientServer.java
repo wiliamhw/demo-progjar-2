@@ -3,6 +3,7 @@ package com.serversocket;
 import javax.naming.ConfigurationException;
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 
 public class ClientServer {
@@ -59,7 +60,7 @@ public class ClientServer {
 
             } while (!connectionFromRequest.equals("close"));
         }
-        catch (IOException e) {}
+        catch (SocketTimeoutException e) {}
         catch (Exception e) {
             System.err.println("Server error: " + e.getMessage());
         } finally {
