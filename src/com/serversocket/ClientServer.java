@@ -26,7 +26,7 @@ public class ClientServer {
      */
     public void serve() {
         try {
-            System.out.format("[%s] Accepting client access\n", new Date());
+            System.out.format("[%s] Accepted\n", new Date());
 
             // create buffer
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -46,7 +46,7 @@ public class ClientServer {
                 requestHeader.setAllRequestHeaders();
                 String hostFromRequest = requestHeader.getHeaderWithKey("Host");
                 connectionFromRequest = requestHeader.getHeaderWithKey("Connection");
-                System.out.format("[%s] %s - Accepted\n", new Date(), requestHeader.getRequestStatus());
+                System.out.format("[%s] %s\n", new Date(), requestHeader.getRequestStatus());
 
                 // Adjust client socket if client request has keep alive connection header.
                 if (connectionFromRequest.equals("keep-alive")) {
@@ -57,11 +57,6 @@ public class ClientServer {
 
                 // Determine document root.
                 String documentRoot = getDocumentRoot(hostFromRequest, requestedFile);
-                if (documentRoot != SERVER_ROOT) {
-                    System.out.format("[%s] Access domain %s in folder %s on port %s\n",
-                            new Date(), hostFromRequest, documentRoot, configService.getPort()
-                    );
-                }
 
                 // Check whether file exists.
                 boolean fileExist = FileService.fileExist(documentRoot + requestedFile);
@@ -92,21 +87,20 @@ public class ClientServer {
                 bufferedWriter.flush();
 
                 // Write response body
-                bos.write(fileService.getFileData(), 0, fileService.getFileLength());
-                bos.flush();
+                fileService.writeFileData(bos);
             } while (!connectionFromRequest.equals("close"));
 
         }
+        catch (IOException e) {}
         catch (Exception e) {
             System.err.println("Server error: " + e.getMessage());
         } finally {
-            // Close the connection
             try {
                 client.close();
             } catch (IOException e) {
                 System.err.println("Server error: " + e.getMessage());
             }
-            System.out.format("[%s] Closing client access\n", new Date());
+            System.out.format("[%s] Closed\n", new Date());
         }
     }
 

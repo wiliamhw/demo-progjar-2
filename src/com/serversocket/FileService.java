@@ -1,8 +1,6 @@
 package com.serversocket;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -10,14 +8,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class FileService {
-    private String fetchedFilePath;
+    private final int BUFFER_SIZE = 1024;
 
+    private String fetchedFilePath;
     private String contentType;
     private String contentDisposition;
+
     private int fileLength;
     private byte[] fileData;
 
     public FileService(String domain, int port, String root, String path, String defaultPath) throws IOException {
+        this.fileData = null;
         String fullPath = root + path;
 
         // If the given path is a file, then fetch the given file.
@@ -63,7 +64,7 @@ public class FileService {
             data.put("path", rootPath + file.getName());
             data.put("lastModified", sdf.format(file.lastModified()));
             data.put("type", (file.isFile()) ? "file" : "folder");
-            data.put("size", Integer.toString((int) sizeInByte)); // in byte
+            data.put("size", Long.toString(sizeInByte)); // in byte
 
             files.add(data);
         }
@@ -98,7 +99,6 @@ public class FileService {
 
         this.setFileLength();
         this.setContentType();
-        this.setFileData();
         this.setContentDisposition();
     }
 
@@ -120,9 +120,22 @@ public class FileService {
         this.contentType = type;
     }
 
-    private void setFileData() throws IOException {
-        FileInputStream fileInputStream = new FileInputStream(this.fetchedFilePath);
-        this.fileData = fileInputStream.readAllBytes();
+    public void writeFileData(BufferedOutputStream bos) throws IOException {
+        if (this.fileData != null) {
+            bos.write(this.fileData, 0, this.fileLength);
+            bos.flush();
+            return;
+        }
+
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(this.fetchedFilePath));
+        byte[] buffer = new byte[BUFFER_SIZE];
+        int bytesRead;
+
+        while (bis.available() > 0) {
+            bytesRead = bis.read(buffer);
+            bos.write(buffer, 0, bytesRead);
+        }
+        bos.flush();
     }
 
     public void setContentDisposition() {
@@ -139,9 +152,5 @@ public class FileService {
 
     public int getFileLength() {
         return this.fileLength;
-    }
-
-    public byte[] getFileData() {
-        return this.fileData;
     }
 }

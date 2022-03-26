@@ -113,7 +113,7 @@ public class ListBuilder {
 
     private String getSize(String sizeStr) {
         int symbolIdx = 0;
-        int size = Integer.parseInt(sizeStr);
+        long size = Long.parseLong(sizeStr);
 
         while (symbolIdx < SIZE_SYMBOL_ORDER.length && ((size / 1024) > 0)) {
             size /= 1024;
