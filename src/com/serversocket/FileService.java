@@ -17,7 +17,10 @@ public class FileService {
     private int fileLength;
     private byte[] fileData;
 
-    public FileService(String domain, int port, String root, String path, String defaultPath) throws IOException {
+    public boolean fileExist;
+
+    public FileService(String domain, int port, String root, String path, String defaultPath, boolean fileExist) throws IOException {
+        this.fileExist = fileExist;
         this.fileData = null;
         String fullPath = root + path;
 
@@ -126,7 +129,6 @@ public class FileService {
             bos.flush();
             return;
         }
-
         BufferedInputStream bis = new BufferedInputStream(new FileInputStream(this.fetchedFilePath));
         byte[] buffer = new byte[BUFFER_SIZE];
         int bytesRead;
